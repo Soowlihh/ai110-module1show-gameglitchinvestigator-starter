@@ -1,67 +1,14 @@
-# Project Reflection – Glitchy Guesser
+1. What was broken when you started?
+When I first ran the game, it technically “worked,” but the behavior felt random and inconsistent. The biggest bug was that the secret number kept changing every time I clicked a button or submitted input, which made it impossible to actually win. Another issue was that the hints didn’t feel reliable because they were based on a new number each rerun, so “too high” or “too low” didn’t reflect the previous guess. Overall, it looked functional on the surface but was logically broken underneath.
 
----
+2. How did you use AI as a teammate?
+I used ChatGPT as my main AI tool to debug and understand what was happening. One correct suggestion it gave was to use st.session_state to store the secret number so it wouldn’t reset on every rerun; I verified this by printing the number before and after interactions and seeing it stay consistent. One misleading suggestion was when it initially focused on restructuring the input logic instead of addressing Streamlit reruns, which didn’t fix the core issue; I verified it was wrong because the bug (changing number) still persisted. That helped me realize I needed to understand the framework behavior, not just patch code.
 
-## 1. What Was Broken When I Started
+3. Debugging and testing your fixes
+I decided a bug was fixed only when I could repeatedly interact with the app and see consistent behavior across multiple inputs. One test I ran manually was guessing the same number multiple times and checking if the hint stayed consistent instead of changing randomly. I also printed out the secret number during testing to confirm it didn’t reset after each action. AI helped me understand what to test (like checking persistence across reruns), even though I had to validate everything myself.
 
-**First impressions:**
-[Write 2–3 sentences describing what the app looked like the first time you ran it. What did you see on screen? What felt off immediately?]
+4. What did you learn about Streamlit and state?
+The secret number kept changing because Streamlit reruns the entire script every time the user interacts with the app, so the variable was being reinitialized each time. I would explain reruns as: every button click or input acts like restarting the script from the top, unless you explicitly store values somewhere persistent. Session state is like a memory that survives these reruns so your app can keep track of things like scores or secret values. The key change I made was storing the secret number inside st.session_state and only generating it once, which finally made the game stable.
 
-**Concrete bugs I noticed:**
-- **Bug 1 – Wrong difficulty ranges:** The Hard difficulty displayed the wrong number range. [Expand: what did the sidebar show vs. what you expected?]
-- **Bug 2 – Reset button didn't work:** Clicking "New Game" did not clear the attempt count. The number of attempts carried over into the new game instead of resetting to zero.
-
----
-
-## 2. How I Used AI as a Teammate
-
-**Tools used:** Claude (via terminal / Claude Code)
-
-**Example of a correct AI suggestion:**
-Claude spotted the difficulty range bug by reading the code and provided a corrected version directly. [Expand: what did you do with that code? Did you run it and test it?]
-
-**Example of a misleading AI suggestion:**
-Claude never flagged the scoring logic bug. The `update_score` function rewards a wrong "Too High" guess with +5 points on even-numbered attempts, which makes no sense for a penalty system. Because Claude didn't catch it and the code ran without errors, I assumed the code was fully fixed — but the logic error was still there.
-
----
-
-## 3. Debugging and Testing My Fixes
-
-**How I decided a bug was really fixed:**
-[Write 2–3 sentences. You manually tested by playing the game — what did you actually do? Click through a full game? Try each difficulty? Hit the reset button mid-game?]
-
-**A test I ran and what it showed:**
-[Describe one specific manual test — for example, "I selected Hard difficulty and played a full game to check the range shown matched the actual secret number."]
-
-**Did AI help with testing?**
-[Honest answer here: Claude provided the fixes but you verified by running the app yourself. Did Claude suggest any specific things to check?]
-
----
-
-## 4. What I Learned About Streamlit and State
-
-**Why the secret number kept changing:**
-[In your own words: Streamlit reruns the entire script from top to bottom every time the user interacts with the page. Without session state, `random.randint` gets called again on every rerun, generating a new secret number each time.]
-
-**Explaining Streamlit reruns to a friend:**
-[Write this like you're explaining it to someone who has never coded. Something like: "Imagine every time you click a button, the whole app restarts from scratch..."]
-
-**The fix that gave the game a stable secret number:**
-The code already used `if "secret" not in st.session_state` to protect the secret number from being regenerated. [Expand: did you have to change this, or was understanding it the key insight for you?]
-
----
-
-## 5. Looking Ahead – My Developer Habits
-
-**One habit I want to reuse:**
-Manual play-testing — actually running the app and playing through it — was the most direct way to confirm whether a fix worked. [Expand: why was this useful specifically?]
-
-**One thing I'd do differently with AI next time:**
-I verified Claude's suggestions by asking Claude if they were correct, which isn't truly independent verification. Next time I would check fixes against a separate source or reason through the logic myself before accepting them.
-
-**How this project changed how I think about AI-generated code:**
-AI can produce code that runs without errors but still contains logic bugs that only show up when you think carefully about what the code is actually supposed to do — not just whether it executes.
-
----
-
-*Built with Streamlit | Debugged with Claude*
+5. Looking ahead: your developer habits
+One habit I want to keep is testing behavior step-by-step instead of assuming a fix works after writing code. Next time, I would be more critical of AI suggestions earlier and focus on understanding the root cause before applying fixes. This project showed me that AI-generated code can be helpful, but it’s not reliable unless I fully understand what it’s doing and verify it myself.
